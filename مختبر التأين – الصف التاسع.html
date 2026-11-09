@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مختبر التأين – الصف التاسع</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EEF5F6;--ink:#12313B;--mut:#5B7680;--card:#fff;--line:#CFE0E4;--ac:#1F7A9C;--acT:#fff;--ok:#2E9B5E;--bad:#D64545;--gold:#E8A21A;--liq:#2BB3C9;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F2229;--ink:#E6F1F3;--mut:#9DB6BD;--card:#17323B;--line:#2A4953;--ac:#5CC0DE;--acT:#0F2229;--ok:#4CC58A;--bad:#F07070;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F2229;--ink:#E6F1F3;--mut:#9DB6BD;--card:#17323B;--line:#2A4953;--ac:#5CC0DE;--acT:#0F2229;--ok:#4CC58A;--bad:#F07070;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Cairo",Tahoma,"Segoe UI",sans-serif;line-height:1.7}
+.wrap{max-width:620px;margin:0 auto;padding:16px}
+header{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+header h1{font-size:1.5rem;font-weight:800;margin:0;line-height:1.2}
+.meta{display:flex;gap:14px;color:var(--mut);font-size:.95rem;margin-top:4px}
+.hd{flex:1}
+svg.fl{width:64px;height:84px;flex:none}
+#liq{transition:transform .6s ease}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:20px}
+.card.shake{animation:sh .35s}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.q{font-size:1.15rem;font-weight:600;margin:0 0 16px}
+.kind{color:var(--mut);font-size:.9rem;margin:0 0 4px}
+.opts{display:grid;gap:10px}
+button{font:inherit;cursor:pointer}
+.opt,.chip{background:var(--bg);color:var(--ink);border:1.5px solid var(--line);border-radius:12px;padding:12px 16px;text-align:start;font-weight:600}
+.opt:hover:not(:disabled),.chip:hover{border-color:var(--ac)}
+.opt.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.no{background:var(--bad);border-color:var(--bad);color:#fff}
+.btn{background:var(--ac);color:var(--acT);border:0;border-radius:12px;padding:12px 22px;font-weight:800}
+.btn.alt{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.chips{display:flex;gap:10px;flex-wrap:wrap;direction:ltr}
+.chip{font-size:1.2rem;min-width:56px;text-align:center}
+.tray{min-height:62px;border:2px dashed var(--line);border-radius:12px;padding:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:14px 0;direction:ltr;font-size:1.15rem;font-weight:600}
+.tray .chip{padding:4px 10px;font-size:1.1rem;min-width:0;background:var(--card)}
+.note{margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--bg);border-inline-start:5px solid var(--ok)}
+.note.bad{border-color:var(--bad)}
+.big{font-size:3rem;font-weight:800;line-height:1.1;margin:0}
+.stars{font-size:2rem;color:var(--gold);letter-spacing:4px;margin:0}
+.dots span{display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--bad);margin-inline-end:4px}
+.dots span.off{background:var(--line)}
+.fm{direction:ltr;unicode-bidi:isolate;display:inline-block}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){#liq{transition:none}.card.shake{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="hd">
+    <h1>مختبر التأين</h1>
+    <div class="meta"><span id="sc">النقاط: 0</span><span class="dots" id="lv" aria-label="المحاولات"></span></div>
+  </div>
+  <svg class="fl" viewBox="0 0 60 80" aria-hidden="true">
+    <defs><clipPath id="cp"><path d="M22 4h16v22l16 40a6 6 0 0 1-5.5 8.5h-37A6 6 0 0 1 6 66L22 26z"/></clipPath></defs>
+    <g clip-path="url(#cp)"><rect id="liq" x="0" y="8" width="60" height="80" fill="var(--liq)" style="transform:translateY(70px)"/></g>
+    <path d="M22 4h16v22l16 40a6 6 0 0 1-5.5 8.5h-37A6 6 0 0 1 6 66L22 26z" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
+  </svg>
+</header>
+<main id="app"></main>
+</div>
+<script>
+const F=s=>'<span class="fm">'+s+'</span>';
+const sh=a=>[...a].sort(()=>Math.random()-.5);
+const MCQ=[
+["ما تعريف التأين؟","افتراق الشق الموجب عن الشق السالب عند وضع المحلول في الماء",["اتحاد ذرتين لتكوين جزيء","انتقال الإلكترونات دون وجود ماء","تبخر المادة عند تسخينها"],"التأين يحدث في المحلول المائي (aq)."],
+["أي مجموعة من المواد تتأين كلها في الماء؟","حمض ، أساس ، ملح ذواب",["معدن ، لا معدن ، غاز","ماء ، أكاسيد ، ملح راسب","حمض ، معدن ، ماء"],"الذي يتأين: الحموض والأسس والأملاح الذوابة."],
+["أي مما يلي لا يتأين في الماء؟","ملح راسب (قليل الذوبان)",["حمض","أساس","ملح ذواب"],"لا يتأين: المعادن واللامعادن والغازات والماء والأكاسيد والأملاح الراسبة."],
+["في التفاعل "+F("Zn + 2HCl → ZnCl₂ + H₂")+" المادة "+F("HCl")+" داخلة في التفاعل (محلول حمض كلور الماء)، فهي…","تتأين",["لا تتأين لأنها غاز","لا تتأين لأنها معدن","لا تتأين لأنها ماء"],"المادة المتفاعلة في المحلول (aq) تتأين."],
+["في التفاعل "+F("2NaCl + H₂SO₄ → Na₂SO₄ + 2HCl")+" المادة "+F("HCl")+" ناتجة وهي غاز كلوريد الهيدروجين (g)، فهي…","لا تتأين",["تتأين لأنها حمض","تتأين لأنها ملح","تتأين دائمًا"],"الغاز الناتج عن التفاعل لا يتأين."],
+["ما نوع السهم في معادلة تأين حمض الآزوت "+F("HNO₃")+" وهو حمض قوي؟","سهم واحد →",["سهمان متعاكسان ⇌","لا يُكتب سهم","علامة يساوي ="],"الحمض القوي يتأين تأينًا تامًا فيُكتب سهم واحد."],
+["حمض الخل "+F("CH₃COOH")+" حمض ضعيف، فتُكتب معادلة تأينه بـ…","سهمين متعاكسين ⇌",["سهم واحد →","سهم نحو اليسار ←","علامة زائد +"],"الحمض الضعيف يتأين تأينًا جزئيًا فيُكتب سهمان متعاكسان."],
+["أي المركبات التالية يتأين تأينًا ضعيفًا؟","حمض الكربون "+F("H₂CO₃"),["حمض الكبريت "+F("H₂SO₄"),"هيدروكسيد البوتاسيوم "+F("KOH"),"كلوريد الصوديوم "+F("NaCl")],"حمض الكربون وحمض الخل ضعيفان، فيُكتب لهما ⇌."],
+["أي معادلة تأين حمض الكبريت صحيحة؟",F("H₂SO₄ → 2H⁺¹ + SO₄⁻²"),[F("H₂SO₄ → H⁺¹ + SO₄⁻²"),F("H₂SO₄ → 2H⁺¹ + SO₄⁻¹"),F("H₂SO₄ → H₂⁺¹ + SO₄⁻²")],"الجزيء يعطي شاردتي هيدروجين +1 وشق كبريتات −2."],
+["أي معادلة تأين هيدروكسيد المغنيزيوم صحيحة؟",F("Mg(OH)₂ → Mg⁺² + 2OH⁻¹"),[F("Mg(OH)₂ → Mg⁺² + OH⁻¹"),F("Mg(OH)₂ → Mg⁺¹ + 2OH⁻¹"),F("Mg(OH)₂ → Mg⁺² + OH₂⁻¹")],"الرقم 2 خارج القوس يصبح معاملًا أمام الشق "+F("OH⁻¹")+"."],
+["ما شحنة شق الفوسفات في تأين "+F("H₃PO₄ → 3H⁺¹ + PO₄؟"),"−3",["−1","−2","+3"],"يجب أن تتعادل الشحنات: 3+ مقابل 3−."],
+["ما ناتجا تأين ملح خلات الصوديوم "+F("CH₃COONa")+"؟",F("CH₃COO⁻¹")+" و "+F("Na⁺¹"),[F("CH₃⁺¹")+" و "+F("COONa⁻¹"),F("CH₃COO⁺¹")+" و "+F("Na⁻¹"),F("CH₃COONa⁺¹")+" و "+F("H⁻¹")],"الصوديوم يعطي أيونًا موجبًا والباقي شق سالب."],
+["كم أيون كلوريد "+F("Cl⁻¹")+" ينتج من تأين جزيء واحد من "+F("AlCl₃")+"؟","3",["1","2","4"],F("AlCl₃ → Al⁺³ + 3Cl⁻¹")]
+];
+const ION=[
+["HNO₃",{'H⁺¹':1,'NO₃⁻¹':1}],["H₂SO₄",{'H⁺¹':2,'SO₄⁻²':1}],["Fe(OH)₃",{'Fe⁺³':1,'OH⁻¹':3}],
+["CuCl₂",{'Cu⁺²':1,'Cl⁻¹':2}],["K₂CO₃",{'K⁺¹':2,'CO₃⁻²':1}],["H₃PO₄",{'H⁺¹':3,'PO₄⁻³':1}],
+["AlCl₃",{'Al⁺³':1,'Cl⁻¹':3}],["Pb(NO₃)₂",{'Pb⁺²':1,'NO₃⁻¹':2}],["(NH₄)₃PO₄",{'NH₄⁺¹':3,'PO₄⁻³':1}],
+["Mg(OH)₂",{'Mg⁺²':1,'OH⁻¹':2}],["AgNO₃",{'Ag⁺¹':1,'NO₃⁻¹':1}],["KI",{'K⁺¹':1,'I⁻¹':1}]
+];
+const POOL=['H⁺¹','K⁺¹','Na⁺¹','Cl⁻¹','OH⁻¹','NO₃⁻¹','SO₄⁻²','CO₃⁻²','Mg⁺²','Al⁺³'];
+const ionStr=o=>Object.entries(o).map(([k,v])=>(v>1?v:'')+k).join(' + ');
+let R,i,sc,lv,ok,tray,locked;
+const $=id=>document.getElementById(id);
+const app=$('app');
+
+function hud(){
+  $('sc').textContent='النقاط: '+sc;
+  $('lv').innerHTML=[0,1,2].map(k=>'<span class="'+(k<lv?'':'off')+'"></span>').join('');
+  $('liq').style.transform='translateY('+(70-62*(R?ok/R.length:0))+'px)';
+}
+function start(){
+  const m=sh(MCQ).slice(0,8).map(x=>({t:'m',q:x[0],a:x[1],o:sh([x[1],...x[2]]),n:x[3]}));
+  const b=sh(ION).slice(0,4).map(x=>({t:'b',f:x[0],c:x[1]}));
+  R=sh([...m,...b]);i=0;sc=0;lv=3;ok=0;
+  hud();show();
+}
+function home(){
+  R=null;sc=0;lv=3;hud();
+  app.innerHTML='<div class="card"><p class="q">اختبر نفسك في التأين والصيغة الأيونية ومعادلة التأين.</p><p>12 سؤالًا: أسئلة عن المواد التي تتأين وأنواع الأسهم، وأخرى تركّب فيها الصيغة الأيونية بنفسك. لديك 3 محاولات، وكل إجابة صحيحة تملأ الدورق.</p><div class="row"><button class="btn" id="go">ابدأ اللعبة</button></div></div>';
+  $('go').onclick=start;
+}
+function show(){
+  locked=false;tray={};
+  const r=R[i];
+  const head='<p class="kind">السؤال '+(i+1)+' من '+R.length+'</p>';
+  if(r.t==='m'){
+    app.innerHTML='<div class="card" id="cd">'+head+'<p class="q">'+r.q+'</p><div class="opts">'+r.o.map((o,k)=>'<button class="opt" data-k="'+k+'"><bdi>'+o+'</bdi></button>').join('')+'</div><div id="fb"></div></div>';
+    app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>pickM(b));
+  }else{
+    const set=sh([...new Set([...Object.keys(r.c),...sh(POOL).slice(0,4)])]).slice(0,7);
+    app.innerHTML='<div class="card" id="cd">'+head+'<p class="q">اكتب الصيغة الأيونية للمركب '+F(r.f)+' (اضغط على الأيون مرات بحسب عدده).</p><div class="chips">'+set.map(s=>'<button class="chip" data-s="'+s+'">'+s+'</button>').join('')+'</div><div class="tray" id="tr" aria-live="polite"></div><div class="row"><button class="btn" id="chk">تحقق</button><button class="btn alt" id="clr">امسح</button></div><div id="fb"></div></div>';
+    app.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{if(locked)return;tray[b.dataset.s]=(tray[b.dataset.s]||0)+1;draw()});
+    $('clr').onclick=()=>{if(!locked){tray={};draw()}};
+    $('chk').onclick=checkB;draw();
+  }
+}
+function draw(){
+  const e=Object.entries(tray);
+  $('tr').innerHTML=e.length?'<span>'+ionStr(tray)+'</span>':'<span style="color:var(--mut);direction:rtl;font-weight:400">اضغط على الأيونات لتضيفها</span>';
+}
+function pickM(b){
+  if(locked)return;locked=true;
+  const r=R[i],good=r.o[b.dataset.k]===r.a;
+  app.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(r.o[x.dataset.k]===r.a)x.classList.add('ok')});
+  if(!good)b.classList.add('no');
+  done(good,r.n);
+}
+function checkB(){
+  if(locked||!Object.keys(tray).length)return;locked=true;
+  const c=R[i].c;
+  const good=Object.keys(c).length===Object.keys(tray).length&&Object.entries(c).every(([k,v])=>tray[k]===v);
+  done(good,'الصيغة الصحيحة: '+F(R[i].f+' → '+ionStr(c)));
+}
+function done(good,msg){
+  if(good){sc+=10+Math.min(ok,5)*2;ok++}else{lv--;$('cd').classList.add('shake')}
+  hud();
+  const last=i+1>=R.length||lv<=0;
+  $('fb').innerHTML='<div class="note '+(good?'':'bad')+'"><b>'+(good?'أحسنت!':'ليست هذه الإجابة.')+'</b> '+msg+'</div><div class="row"><button class="btn" id="nx">'+(last?'اعرض النتيجة':'السؤال التالي')+'</button></div>';
+  $('nx').focus();
+  $('nx').onclick=()=>{i++;last?end():show()};
+}
+function end(){
+  const p=ok/R.length,st=p>=.85?3:p>=.6?2:p>=.3?1:0;
+  const msg=lv<=0?'انتهت المحاولات، راجع الدرس وجرّب من جديد.':st===3?'ممتاز! أتقنت التأين.':'نتيجة جيدة، راجع الأسئلة التي أخطأت فيها.';
+  app.innerHTML='<div class="card" style="text-align:center"><p class="stars" aria-label="'+st+' من 3 نجوم">'+'★'.repeat(st)+'<span style="color:var(--line)">'+'★'.repeat(3-st)+'</span></p><p class="big">'+sc+'</p><p>نقطة، وأجبت صحيحًا عن '+ok+' من '+R.length+' أسئلة.</p><p>'+msg+'</p><div class="row" style="justify-content:center"><button class="btn" id="again">العب مرة أخرى</button></div></div>';
+  $('again').onclick=start;
+}
+home();
+</script>
+</body>
+</html>
